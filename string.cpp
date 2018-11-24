@@ -101,6 +101,11 @@ void strcopy(char* s1, const char* s2, int len) {
 	for (int i = 0; i < len; ++i)
 		s1[i] = s2[i];
 }
+void strcopy(char* s1, const char* s2, int l, int r) {
+	int j = 0;
+	for (int i = l; i < r; ++i)
+		s1[j++] = s2[i];
+}
 char* read(const char *s) {
 	int i;
 	char *ptr;
@@ -108,6 +113,19 @@ char* read(const char *s) {
 	std::cout << s;
 	for (i = 0; (buff[i] = std::cin.get()) != '\n'; ++i);
 	buff[i] = '\0';
+	ptr = new char[i + 1];
+	do {
+		ptr[i] = buff[i];
+	} while (i--);
+	return ptr;
+}
+char* read(std::ifstream &in) {
+	int i;
+	char *ptr = NULL;
+	char buff[MAX_SIZE];
+	for (i = 0; (buff[i] = in.get()) != '\n' && buff[i] != EOF; ++i);
+	if (buff[i] == EOF) return ptr;
+	buff[++i] = '\0';
 	ptr = new char[i + 1];
 	do {
 		ptr[i] = buff[i];
@@ -128,4 +146,24 @@ void writeln(const char *s1, const double d) {
 }
 size_t __cdecl my_strlen(const char *s) {
 	return ((s) ? strlen(s) : 0);
+}
+double strdbl(const char *str) {
+	int i;
+	double num = 0.0;
+	double k = 10.0;
+	for (i = 0; str[i] != '\0'; ++i) {
+		if (str[i] > 47 && str[i] < 58)
+			num = num * k + ((int)str[i] - 48);
+		if (str[i] == '.')
+			break;
+	}
+	if (str[i] != '\0') {
+		for (++i; str[i] != '\0'; ++i) {
+			if (str[i] > 47 && str[i] < 58) {
+				num += double((int)str[i] - 48) / k;
+				k *= 10.0;
+			}
+		}
+	}
+	return num;
 }

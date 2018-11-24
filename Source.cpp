@@ -9,10 +9,19 @@ int main() {
 		lenM = 0,
 		lenW = 0;
 	bool flag = true;
-	furniture *f = nullptr;
-	machine *m = nullptr;
-	worker *w = nullptr;
+	Keeper *k = new Keeper();
 	setlocale(LC_ALL, "Russian");
+
+	std::cout << "Считать файл бызы?(1 - y/0 - n) ";
+	std::cin >> ch;
+	std::cin.get();
+	try {
+		if (ch) k->LoadBaseFile();
+	}
+	catch (exceptions &e) {
+		std::cout << e.what() << std::endl;
+	}
+
 	while (flag) {
 		writeln("1. Мебель");
 		writeln("2. Работники");
@@ -24,13 +33,13 @@ int main() {
 		std::cout << std::endl;
 		switch (ch) {
 		case 1:
-			f = menu(f, lenF);
+			menu_f(k);
 			break;
 		case 2:
-			w = menu(w, lenW);
+			menu_w(k);
 			break;
 		case 3:
-			m = menu(m, lenM);
+			menu_m(k);
 			break;
 		case 4:
 			flag = false;
@@ -38,9 +47,17 @@ int main() {
 		}
 		std::cout << std::endl;
 	}
-	delete[] f;
-	delete[] m;
-	delete[] w;
+
+	std::cout << "Сохранить изменения?(1 - y/0 - n) ";
+	std::cin >> ch;
+	std::cin.get();
+	try {
+		if (ch) k->SaveBaseFile();
+	}
+	catch (exceptions &e) {
+		std::cout << e.what() << std::endl;
+	}
+	delete k;
 	return 0;
 }
 

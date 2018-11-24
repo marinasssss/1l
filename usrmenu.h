@@ -1,11 +1,9 @@
 #pragma once
-#include "furniture.h"
-#include "machine.h"
-#include "worker.h"
+#include "Keeper.h"
 
-furniture* menu(furniture* f, int &l);		//Меню для мебели
-worker* menu(worker* w, int &l);			//Меню для рабочих
-machine* menu(machine* m, int &l);			//Меню для машин
+void menu_f(Keeper *k);			//Меню для мебели
+void menu_m(Keeper *k);			//Меню для рабочих
+void menu_w(Keeper *k);			//Меню для машин
 
 template <typename T>
 void print(T *obj, int l);					//Печать всех объектов

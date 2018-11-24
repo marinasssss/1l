@@ -4,7 +4,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-furniture* menu(furniture* f, int &l) {
+void menu_f(Keeper* k) {
 	int i;
 	int ch;
 	bool flag = true;
@@ -24,50 +24,38 @@ furniture* menu(furniture* f, int &l) {
 			writeln("сли хотите оставить строковый параметр пустым нажмите enter");
 			writeln("Если параметр числовой, то введите \"0\"");
 			writeln("Символы-разделители: ", SEPARATORS);
-			ptr = new furniture[l + 1];
-			for (i = 0; i < l; ++i) {
-				ptr[i] = *(f + i);
-			}
-			delete[] f;
-			f = ptr;
-			f[l].scanType();
-			f[l].scanDim();
-			f[l].scanCol();
-			f[l].scanMat();
-			f[l].scanPr();
-			++l;
+
+			ptr = new furniture();
+			ptr->scanType();
+			ptr->scanDim();
+			ptr->scanCol();
+			ptr->scanMat();
+			ptr->scanPr();
+			k->CreateObjectFactory(ptr, 0);
+			delete ptr;
 			break;
 		case 2:
-			if (l) {
+			if (k->getLens(0)) {
 				try {
-					ch = choose(f, l);
+					ch = choose(k->getFurniture(), k->getLens(0));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
 					break;
 				}
-				ptr = new furniture[l - 1];
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = f[i];
-				}
-				for (++i; i < l; ++i) {
-					ptr[i - 1] = f[i];
-				}
-				delete[] f;
-				f = ptr;
-				--l;
+				k->DeleteObjectFactory(0, ch);
 				writeln("Удаление завершено");
 			}
 			else {
-				print(f, l);
+				print(k->getFurniture(), k->getLens(0));
 			}
 			break;
 		case 3:
-			if (l) {
+			if (k->getLens(0)) {
 				int n;
 				char *str;
 				try {
-					ch = choose(f, l);
+					ch = choose(k->getFurniture(), k->getLens(0));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
@@ -104,42 +92,42 @@ furniture* menu(furniture* f, int &l) {
 					cin.get();
 					switch (n--) {
 					case 1:
-						f[ch].scanType();
+						(k->getFurniture() + ch)->scanType();
 						writeln("\tУспешно");
 						break;
 					case 2:
-						f[ch].scanDim();
+						(k->getFurniture() + ch)->scanDim();
 						writeln("\tУспешно");
 						break;
 					case 3:
-						f[ch].scanCol();
+						(k->getFurniture() + ch)->scanCol();
 						writeln("\tУспешно");
 						break;
 					case 4:
-						f[ch].scanMat();
+						(k->getFurniture() + ch)->scanMat();
 						writeln("\tУспешно");
 						break;
 					case 5:
-						f[ch].scanPr();
+						(k->getFurniture() + ch)->scanPr();
 						writeln("\tУспешно");
 						break;
 					case 6:
 						str = read("\tВведите название цвета: ");
-						f[ch].addCol(str);
+						(k->getFurniture() + ch)->addCol(str);
 						writeln("\tУспешно");
 						break;
 					case 7:
 						str = read("\tВведите название материала: ");
-						f[ch].addMat(str);
+						(k->getFurniture() + ch)->addMat(str);
 						writeln("\tУспешно");
 						break;
 					case 8:
-						if (f[ch].getCol()) {
+						if ((k->getFurniture() + ch)->getCol()) {
 							char *str2;;
-							writeln("\tЦвета: ", f[ch].getCol());
+							writeln("\tЦвета: ", (k->getFurniture() + ch)->getCol());
 							str = read("Введите заменяемый цвет: ");
 							str2 = read("Введите заменяющий цвет: ");
-							if (f[ch].replaceCol(str, str2))
+							if ((k->getFurniture() + ch)->replaceCol(str, str2))
 								writeln("\tУспешно");
 							else
 								writeln("\tЦвет не присутствует в списке");
@@ -148,12 +136,12 @@ furniture* menu(furniture* f, int &l) {
 							writeln("\tСписок цветов пуст");
 						break;
 					case 9:
-						if (f[ch].getCol()) {
+						if ((k->getFurniture() + ch)->getCol()) {
 							char *str2;;
-							writeln("\tЦвета: ", f[ch].getCol());
+							writeln("\tЦвета: ", (k->getFurniture() + ch)->getCol());
 							str = read("Введите заменяемый метериал: ");
 							str2 = read("Введите заменяющий метериал: ");
-							if (f[ch].replaceCol(str, str2))
+							if ((k->getFurniture() + ch)->replaceCol(str, str2))
 								writeln("\tУспешно");
 							else
 								writeln("\tМатериал не присутствует в списке");
@@ -162,10 +150,10 @@ furniture* menu(furniture* f, int &l) {
 							writeln("\tСписок материалов пуст");
 						break;
 					case 10:
-						writeln("\tТип: ", f[ch].getType());
+						writeln("\tТип: ", (k->getFurniture() + ch)->getType());
 						break;
 					case 11: {
-						const double *t = f[ch].getDim();
+						const double *t = (k->getFurniture() + ch)->getDim();
 						writeln("\tГабариты: ");
 						writeln("\t\tВысота: ", t[0]);
 						writeln("\t\tШирина: ", t[1]);
@@ -173,39 +161,39 @@ furniture* menu(furniture* f, int &l) {
 					}
 						break;
 					case 12:
-						writeln("\tЦвета: ", f[ch].getCol());
+						writeln("\tЦвета: ", (k->getFurniture() + ch)->getCol());
 						break;
 					case 13:
-						writeln("\tМатериалы: ", f[ch].getMat());
+						writeln("\tМатериалы: ", (k->getFurniture() + ch)->getMat());
 						break;
 					case 14:
-						writeln("\tЦена: ", f[ch].getPr());
+						writeln("\tЦена: ", (k->getFurniture() + ch)->getPr());
 						break;
 					case 15:
-						f[ch].clearType();
+						(k->getFurniture() + ch)->clearType();
 						writeln("\tУспешно");
 						break;
 					case 16:
-						f[ch].clearDim();
+						(k->getFurniture() + ch)->clearDim();
 						writeln("\tУспешно");
 						break;
 					case 17:
-						f[ch].clearCol();
+						(k->getFurniture() + ch)->clearCol();
 						writeln("\tУспешно");
 						break;
 					case 18:
-						f[ch].clearMat();
+						(k->getFurniture() + ch)->clearMat();
 						writeln("\tУспешно");
 						break;
 					case 19:
-						f[ch].clearPr();
+						(k->getFurniture() + ch)->clearPr();
 						writeln("\tУспешно");
 						break;
 					case 20:
-						if (f[ch].getCol()) {
-							writeln("\tЦвета: ", f[ch].getCol());
+						if ((k->getFurniture() + ch)->getCol()) {
+							writeln("\tЦвета: ", (k->getFurniture() + ch)->getCol());
 							str = read("Введите название цвета: ");
-							if (f[ch].removeCol(str))
+							if ((k->getFurniture() + ch)->removeCol(str))
 								writeln("\tУспешно");
 							else
 								writeln("\tЦвет не присутствует в списке");
@@ -214,10 +202,10 @@ furniture* menu(furniture* f, int &l) {
 							writeln("\tСписок цветов пуст");
 						break;
 					case 21:
-						if (f[ch].getMat()) {
-							writeln("\tМатериалы: ", f[ch].getMat());
+						if ((k->getFurniture() + ch)->getMat()) {
+							writeln("\tМатериалы: ", (k->getFurniture() + ch)->getMat());
 							str = read("Введите название материала: ");
-							if (f[ch].removeMat(str))
+							if ((k->getFurniture() + ch)->removeMat(str))
 								writeln("\tУспешно");
 							else
 								writeln("\tМатериал не присутствует в списке");
@@ -226,7 +214,7 @@ furniture* menu(furniture* f, int &l) {
 							writeln("\tСписок материалов пуст");
 						break;
 					case 22:
-						f[ch].print();
+						(k->getFurniture() + ch)->print();
 						break;
 					case 23:
 						flag = false;
@@ -238,11 +226,11 @@ furniture* menu(furniture* f, int &l) {
 				flag = true;
 			}
 			else {
-				print(f, l);
+			print(k->getFurniture(), k->getLens(0));
 			}
 			break;
 		case 4:
-			print(f, l);
+			print(k->getFurniture(), k->getLens(0));
 			break;
 		case 5:
 			flag = false;
@@ -250,9 +238,8 @@ furniture* menu(furniture* f, int &l) {
 		}
 		cout << endl;
 	}
-	return f;
 }
-worker* menu(worker* w, int &l) {
+void menu_w(Keeper* k) {
 	int i;
 	int ch;
 	bool flag = true;
@@ -272,50 +259,38 @@ worker* menu(worker* w, int &l) {
 			writeln("сли хотите оставить строковый параметр пустым нажмите enter");
 			writeln("Если параметр числовой, то введите \"0\"");
 			writeln("Символы-разделители: ", SEPARATORS);
-			ptr = new worker[l + 1];
-			for (i = 0; i < l; ++i) {
-				ptr[i] = *(w + i);
-			}
-			delete[] w;
-			w = ptr;
-			w[l].scanName();
-			w[l].scanPos();
-			w[l].scanSal();
-			w[l].scanAds();
-			w[l].scanNum();
-			++l;
+			
+			ptr = new worker();
+			ptr->scanName();
+			ptr->scanPos();
+			ptr->scanSal();
+			ptr->scanAds();
+			ptr->scanNum();
+			k->CreateObjectFactory(ptr, 1);
+			delete ptr;
 			break;
 		case 2:
-			if (l) {
+			if (k->getLens(1)) {
 				try {
-					ch = choose(w, l);
+					ch = choose(k->getWorker(), k->getLens(1));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
 					break;
 				}
-				ptr = new worker[l - 1];
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = w[i];
-				}
-				for (++i; i < l; ++i) {
-					ptr[i - 1] = w[i];
-				}
-				delete[] w;
-				w = ptr;
-				--l;
+				k->DeleteObjectFactory(1, ch);
 				writeln("Удаление завершено");
 			}
 			else {
-				print(w, l);
+				print(k->getWorker(), k->getLens(1));
 			}
 			break;
 		case 3:
-			if (l) {
+			if (k->getLens(1)) {
 				int n;
 				char *str;
 				try {
-					ch = choose(w, l);
+					ch = choose(k->getWorker(), k->getLens(1));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
@@ -346,62 +321,62 @@ worker* menu(worker* w, int &l) {
 					cin.get();
 					switch (n--) {
 					case 1:
-						w[ch].scanName();
+						(k->getWorker() + ch)->scanName();
 						writeln("\tУспешно");
 						break;
 					case 2:
-						w[ch].scanPos();
+						(k->getWorker() + ch)->scanPos();
 						writeln("\tУспешно");
 						break;
 					case 3:
-						w[ch].scanSal();
+						(k->getWorker() + ch)->scanSal();
 						writeln("\tУспешно");
 						break;
 					case 4:
-						w[ch].scanAds();
+						(k->getWorker() + ch)->scanAds();
 						writeln("\tУспешно");
 						break;
 					case 5:
-						w[ch].scanNum();
+						(k->getWorker() + ch)->scanNum();
 						writeln("\tУспешно");
 						break;
 					case 6:
-						writeln("\tФИО: ", w[ch].getName());
+						writeln("\tФИО: ", (k->getWorker() + ch)->getName());
 						break;
 					case 7:
-						writeln("\tДолжность: ", w[ch].getPos());
+						writeln("\tДолжность: ", (k->getWorker() + ch)->getPos());
 						 break;
 					case 8:
-						writeln("\tЗП: ", w[ch].getSal());
+						writeln("\tЗП: ", (k->getWorker() + ch)->getSal());
 						break;
 					case 9:
-						writeln("\tАдрес: ", w[ch].getAds());
+						writeln("\tАдрес: ", (k->getWorker() + ch)->getAds());
 						break;
 					case 10:
-						writeln("\tНомер телефона: ", w[ch].getNum());
+						writeln("\tНомер телефона: ", (k->getWorker() + ch)->getNum());
 						break;
 					case 11:
-						w[ch].clearName();
+						(k->getWorker() + ch)->clearName();
 						writeln("\tУспешно");
 						break;
 					case 12:
-						w[ch].clearPos();
+						(k->getWorker() + ch)->clearPos();
 						writeln("\tУспешно");
 						break;
 					case 13:
-						w[ch].clearSal();
+						(k->getWorker() + ch)->clearSal();
 						writeln("\tУспешно");
 						break;
 					case 14:
-						w[ch].clearAds();
+						(k->getWorker() + ch)->clearAds();
 						writeln("\tУспешно");
 						break;
 					case 15:
-						w[ch].clearNum();
+						(k->getWorker() + ch)->clearNum();
 						writeln("\tУспешно");
 						break;
 					case 16:
-						w[ch].print();
+						(k->getWorker() + ch)->print();
 						break;
 					case 17:
 						flag = false;
@@ -413,11 +388,11 @@ worker* menu(worker* w, int &l) {
 				flag = true;
 			}
 			else {
-				print(w, l);
+			print(k->getWorker(), k->getLens(1));
 			}
 			break;
 		case 4:
-			print(w, l);
+			print(k->getWorker(), k->getLens(1));
 			break;
 		case 5:
 			flag = false;
@@ -425,9 +400,8 @@ worker* menu(worker* w, int &l) {
 		}
 		cout << endl;
 	}
-	return w;
 }
-machine* menu(machine* m, int &l) {
+void menu_m(Keeper* k) {
 	int i;
 	int ch;
 	bool flag = true;
@@ -447,48 +421,36 @@ machine* menu(machine* m, int &l) {
 			writeln("сли хотите оставить строковый параметр пустым нажмите enter");
 			writeln("Если параметр числовой, то введите \"0\"");
 			writeln("Символы-разделители: ", SEPARATORS);
-			ptr = new machine[l + 1];
-			for (i = 0; i < l; ++i) {
-				ptr[i] = *(m + i);
-			}
-			delete[] m;
-			m = ptr;
-			m[l].scanBrd();
-			m[l].scanMod();
-			m[l].scanNum();
-			++l;
+		
+			ptr = new machine();
+			ptr->scanBrd();
+			ptr->scanMod();
+			ptr->scanNum();
+			k->CreateObjectFactory(ptr, 2);
+			delete ptr;
 			break;
 		case 2:
-			if (l) {
+			if (k->getLens(2)) {
 				try {
-					ch = choose(m, l);
+					ch = choose(k->getMachine(), k->getLens(2));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
 					break;
 				}
-				ptr = new machine[l - 1];
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = m[i];
-				}
-				for (++i; i < l; ++i) {
-					ptr[i - 1] = m[i];
-				}
-				delete[] m;
-				m = ptr;
-				--l;
+				k->DeleteObjectFactory(2, ch);
 				writeln("Удаление завершено");
 			}
 			else {
-				print(m, l);
+				print(k->getMachine(), k->getLens(2));
 			}
 			break;
 		case 3:
-			if (l) {
+			if (k->getLens(2)) {
 				int n;
 				char *str;
 				try {
-					ch = choose(m, l);
+					ch = choose(k->getMachine(), k->getLens(2));
 				}
 				catch (exceptions e) {
 					std::cout << e.what();
@@ -513,40 +475,40 @@ machine* menu(machine* m, int &l) {
 					cin.get();
 					switch (n--) {
 					case 1:
-						m[ch].scanBrd();
+						(k->getMachine() + ch)->scanBrd();
 						writeln("\tУспешно");
 						break;
 					case 2:
-						m[ch].scanMod();
+						(k->getMachine() + ch)->scanMod();
 						writeln("\tУспешно");
 						break;
 					case 3:
-						m[ch].scanNum();
+						(k->getMachine() + ch)->scanNum();
 						writeln("\tУспешно");
 						break;
 					case 4:
-						writeln("\tМарка: ", m[ch].getBrd());
+						writeln("\tМарка: ", (k->getMachine() + ch)->getBrd());
 						break;
 					case 5:
-						writeln("\tМодель: ", m[ch].getMod());
+						writeln("\tМодель: ", (k->getMachine() + ch)->getMod());
 						break;
 					case 6:
-						writeln("\tНомер: ", m[ch].getNum());
+						writeln("\tНомер: ", (k->getMachine() + ch)->getNum());
 						break;
 					case 7:
-						m[ch].clearBrd();
+						(k->getMachine() + ch)->clearBrd();
 						writeln("\tУспешно");
 						break;
 					case 8:
-						m[ch].clearMod();
+						(k->getMachine() + ch)->clearMod();
 						writeln("\tУспешно");
 						break;
 					case 9:
-						m[ch].clearNum();
+						(k->getMachine() + ch)->clearNum();
 						writeln("\tУспешно");
 						break;
 					case 10:
-						m[ch].print();
+						(k->getMachine() + ch)->print();
 						break;
 					case 11:
 						flag = false;
@@ -558,11 +520,11 @@ machine* menu(machine* m, int &l) {
 				flag = true;
 			}
 			else {
-				print(m, l);
+				print(k->getMachine(), k->getLens(2));
 			}
 			break;
 		case 4:
-			print(m, l);
+			print(k->getMachine(), k->getLens(2));
 			break;
 		case 5:
 			flag = false;
@@ -570,7 +532,6 @@ machine* menu(machine* m, int &l) {
 		}
 		cout << endl;
 	}
-	return m;
 }
 
 template <typename T>

@@ -51,8 +51,8 @@ void worker::setPos(const char* p) {
 	int n = my_strlen(p);
 	clearPos();
 	if (n++) {
-		name = new char[n];
-		strcopy(name, p, n);
+		pos = new char[n];
+		strcopy(pos, p, n);
 	}
 
 }
