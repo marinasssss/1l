@@ -8,7 +8,7 @@ using std::endl;
 using std::ifstream;
 using std::ofstream;
 
-#define PATH "C:/misha/dev.txt"
+#define PATH "D:/tc/TP/1l/Ò_P_TWO/dev.txt"
 
 Keeper::Keeper() : f(nullptr), m(nullptr), w(nullptr) {
 	for (int i = 0; i < COUNT; ++i)
@@ -37,23 +37,23 @@ void Keeper::CreateObjectFactory(factory* ft, int N) {
 		++lens[0];
 		break;
 	case 1:
-		work = new worker[lens[2] + 1];
-		for (i = 0; i < lens[2]; ++i) {
+		work = new worker[lens[1] + 1];
+		for (i = 0; i < lens[1]; ++i) {
 			work[i] = *(w + i);
 		}
 		delete[] w;
 		w = work;
-		if (ft) w[lens[2]] = (*(worker*)(ft));
+		if (ft) w[lens[1]] = (*(worker*)(ft));
 		++lens[1];
 		break;
 	case 2:
-		mach = new machine[lens[1] + 1];
-		for (i = 0; i < lens[1]; ++i) {
+		mach = new machine[lens[2] + 1];
+		for (i = 0; i < lens[2]; ++i) {
 			mach[i] = *(m + i);
 		}
 		delete[] m;
 		m = mach;
-		if (ft) m[lens[1]] = (*(machine*)(ft));
+		if (ft) m[lens[2]] = (*(machine*)(ft));
 		++lens[2];
 		break;
 	}
@@ -81,7 +81,7 @@ void Keeper::DeleteObjectFactory(int trNum, int dec) {
 		for (i = 0; i < dec; ++i) {
 			work[i] = w[i];
 		}
-		for (++i; i < lens[2]; ++i) {
+		for (++i; i < lens[1]; ++i) {
 			work[i - 1] = w[i];
 		}
 		delete[] w;
@@ -93,7 +93,7 @@ void Keeper::DeleteObjectFactory(int trNum, int dec) {
 		for (i = 0; i < dec; ++i) {
 			mach[i] = m[i];
 		}
-		for (++i; i < lens[1]; ++i) {
+		for (++i; i < lens[2]; ++i) {
 			mach[i - 1] = m[i];
 		}
 		delete[] m;
